@@ -36,7 +36,7 @@ const createUser = async (req, res) => {
 //LoginUser
 
 const logingUser = async (req, res) => {
-  const username = req.body.username;
+   const username = req.body.username;
   const password = req.body.password;
 
   const user = await userSchema.findOne({ username }).select(`+password`);
@@ -92,7 +92,7 @@ const viewProduct = async (req, res) => {
 
 const productById = async (req, res) => {
   const productId = req.params.id;
-  if (!mongoose.Types.ObjectId.isValid(productById)) {
+  if (!productId) {
     return res.status(400).json({
       status: "fail",
       message: "Invalied Product Id",
@@ -187,7 +187,7 @@ const cartProduct = async (req, res) => {
       message: "User Not Found",
     });
   }
-  const cartUserId = user.id;
+  const cartUserId = userId
   if (cartUserId.length === 0) {
     return res.status(200).json({
       status: "success",
@@ -215,6 +215,7 @@ const addToWishList = async (req, res) => {
   }
   const { productId } = req.body;
   const products = await productSchema.findById(productId);
+  console.log(products,'products');
   if (!products) {
     return res.status(404).json({
       status: "fail",
@@ -222,15 +223,17 @@ const addToWishList = async (req, res) => {
     });
   }
   const findProduct = await userSchema.findOne({
-    _id: userId,
-    wishlist: productId,
+    _id:userId,
+    wishlist:productId,
   });
-  if (!findProduct) {
+ 
+  if (findProduct) {
     return res.status(409).json({
       status: "fail",
       message: "Product all redey exist",
     });
   }
+
   await userSchema.updateOne(
     { _id: userId },
     { $push: { wishlist: productId } }
@@ -245,7 +248,7 @@ const addToWishList = async (req, res) => {
 
 const wishList = async (req, res) => {
   const userId = req.params.id;
-  if (!mongoose.Types.ObjectId.isValid(userId)) {
+  if (!userId) {
     return res.status(400).json({
       status: "fail",
       message: "Invalied User ID ",
@@ -267,8 +270,9 @@ const wishList = async (req, res) => {
     });
   }
   const wishListProduct = await productSchema.find({
-    _id: { $set: wishlistId },
-  });
+    _id: wishlistId,
+});
+
   res.status(200).json({
     status: "success",
     message: "sduccessfuly fetch user wish list",
@@ -301,6 +305,8 @@ const deleteWishList = async (req, res) => {
     message: "Removed product",
   });
 };
+
+
 // Paymet Section
 
 let value = {};
@@ -311,6 +317,7 @@ const PaymetSection = async (req, res) => {
     .findOne({ _id: userId })
     .populate("cart")
     .exec();
+    
   if (!user) {
     return res.status(404).json({
       status: "fail",
@@ -318,6 +325,7 @@ const PaymetSection = async (req, res) => {
     });
   }
   const cartProduct = user.cart;
+
   if (cartProduct.length === 0) {
     res.status(200).json({
       status: "succes",
@@ -331,17 +339,17 @@ const PaymetSection = async (req, res) => {
         product_data: {
           name: i.description,
         },
-        unit_amount: Math.round(i.pricce * 100),
+        unit_amount: Math.round(i.price * 100),
       },
       quantity: 1,
     };
   });
-  session = await stripe.checkout.session.create({
+  const session = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],
     line_items: items,
     mode: "payment",
-    success_url: `http://localhost:6000/api/users/payment/success`,
-    cancel_url: "http://localhost:3000/api/users/payment/cancel",
+    success_url: `http://localhost:6000/users/payment/success`,
+    cancel_url: "http://localhost:3000/users/payment/cancel",
   });
   if (!session) {
     return res.status(400).json({
