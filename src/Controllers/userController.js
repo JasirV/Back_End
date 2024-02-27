@@ -8,12 +8,10 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const orderSchema = require("../Models/oderSchema");
 
 //Register User
-
 const createUser = async (req, res) => {
   const { name, email, username, password } = req.body;
 
   const user = await userSchema.findOne({ username: username });
-  console.log(user);
   if (user) {
     return res.status(400).json({
       message: "User allrady exist",
@@ -36,7 +34,7 @@ const createUser = async (req, res) => {
 //LoginUser
 
 const logingUser = async (req, res) => {
-   const username = req.body.username;
+  const username = req.body.username;
   const password = req.body.password;
 
   const user = await userSchema.findOne({ username }).select(`+password`);
@@ -115,9 +113,7 @@ const productById = async (req, res) => {
 
 const productList = async (req, res) => {
   const Paramscategory = req.params.categoryname;
-  console.log(Paramscategory);
   const category = await productSchema.find({ categoryname: Paramscategory });
-  console.log(category);
   if (!category) {
     return res.status(400).json({
       status: "fail",
@@ -187,7 +183,7 @@ const cartProduct = async (req, res) => {
       message: "User Not Found",
     });
   }
-  const cartUserId = userId
+  const cartUserId = userId;
   if (cartUserId.length === 0) {
     return res.status(200).json({
       status: "success",
@@ -215,7 +211,6 @@ const addToWishList = async (req, res) => {
   }
   const { productId } = req.body;
   const products = await productSchema.findById(productId);
-  console.log(products,'products');
   if (!products) {
     return res.status(404).json({
       status: "fail",
@@ -223,10 +218,10 @@ const addToWishList = async (req, res) => {
     });
   }
   const findProduct = await userSchema.findOne({
-    _id:userId,
-    wishlist:productId,
+    _id: userId,
+    wishlist: productId,
   });
- 
+
   if (findProduct) {
     return res.status(409).json({
       status: "fail",
@@ -271,7 +266,7 @@ const wishList = async (req, res) => {
   }
   const wishListProduct = await productSchema.find({
     _id: wishlistId,
-});
+  });
 
   res.status(200).json({
     status: "success",
@@ -306,7 +301,6 @@ const deleteWishList = async (req, res) => {
   });
 };
 
-
 // Paymet Section
 
 let value = {};
@@ -317,7 +311,7 @@ const PaymetSection = async (req, res) => {
     .findOne({ _id: userId })
     .populate("cart")
     .exec();
-    
+
   if (!user) {
     return res.status(404).json({
       status: "fail",
@@ -348,7 +342,7 @@ const PaymetSection = async (req, res) => {
     payment_method_types: ["card"],
     line_items: items,
     mode: "payment",
-    success_url: `http://localhost:6000/users/payment/success`,
+    success_url: `http://localhost:3000/users/payment/success`,
     cancel_url: "http://localhost:3000/users/payment/cancel",
   });
   if (!session) {
@@ -421,7 +415,7 @@ const Orders = async (req, res) => {
   }
   const orderProducts = user.orders;
   if (orderProducts.length === 0) {
-    res.status(200).json({
+   return res.status(200).json({
       message: "You Not Orders ",
       data: [],
     });

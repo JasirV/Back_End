@@ -1,11 +1,10 @@
 const jwt = require("jsonwebtoken");
-require('dotenv').config();
+require("dotenv").config();
 
 const tokengenerator = (id) => {
   try {
-    console.log("Secret key:", process.env.USER_ACCESS_TOKEN_SECRET); // Debugging
-    const token = jwt.sign({ id: id }, process.env.USER_ACCESS_TOKEN_SECRET, {
-      expiresIn: process.env.LOGIN_EXPIRES,
+    const token = jwt.sign({ id: id }, process.env.USER_ACCES_TOKEN_SECRET, {
+      expiresIn: "1d",
     });
     return token;
   } catch (error) {
