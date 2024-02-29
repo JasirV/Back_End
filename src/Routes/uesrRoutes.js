@@ -13,6 +13,7 @@ userRouter
   .get("/products/category/:categoryname", tryCatch(userController.productList))
   .post("/:id/cart", tryCatch(userController.addToCart))
   .get("/:id/cart", tryCatch(userController.cartProduct))
+  .delete('/:id/cart',tryCatch(userController.deleteProduct))
   .post("/:id/wishlist", tryCatch(userController.addToWishList))
   .get("/:id/wishlist", tryCatch(userController.wishList))
   .delete("/:id/wishlist", tryCatch(userController.deleteWishList))

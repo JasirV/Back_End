@@ -6,7 +6,10 @@ const productSchema=new mongoose.Schema({
     description:String,
     price:Number,
     image:String,
-    category:String
+    category: {
+        type: String,
+        enum: ['car', 'dog'] 
+    }
 })
 
 module.exports=mongoose.model('product',productSchema)

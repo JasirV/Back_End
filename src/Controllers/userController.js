@@ -195,9 +195,33 @@ const cartProduct = async (req, res) => {
   res.status(200).json({
     status: "success",
     message: "successfull fetch products",
-    data: cartProduct,
+    data: cartProducts,
   });
 };
+
+const deleteProduct=async (req,res)=>{
+  const userId=req.params.id;
+const {id}=req.body;
+if(!id){
+  return res.status(400).json({
+    status:'fail',
+    message:'Invaild ID'
+  })
+}
+const user =await userSchema.findById(userId)
+console.log(user);
+if(!user){
+  return res.status(404).json({
+    status:'fail',
+    message:'User Not Found!'
+  })
+}
+await userSchema.updateOne({_id:userId},{$pull:{cart:id}});
+res.status(200).json({
+  status:"success",
+  message:'Product Deleted',
+})
+}
 
 //add to wishlist
 
@@ -444,4 +468,5 @@ module.exports = {
   PaymetSection,
   succesPayment,
   Orders,
+  deleteProduct
 };
