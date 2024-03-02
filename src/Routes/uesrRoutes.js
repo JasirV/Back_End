@@ -10,7 +10,7 @@ userRouter
   .use(verifyToken)
   .get("/products", tryCatch(userController.viewProduct))
   .get("/products/:id", tryCatch(userController.productById))
-  .get("/products/category/:categoryname", tryCatch(userController.productList))
+  .get('/products/:categoryname',(userController.productList))
   .post("/:id/cart", tryCatch(userController.addToCart))
   .get("/:id/cart", tryCatch(userController.cartProduct))
   .delete('/:id/cart',tryCatch(userController.deleteProduct))

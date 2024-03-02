@@ -1,9 +1,9 @@
 const jwt =require('jsonwebtoken')
 
 module.exports= function verifyToken(req,res,next){
-const head=req.headers['authorization'];
+const head=req.headers["authorization"];
 if(!head){
-    return res.status(403).jso({
+    return res.status(403).json({
         message:"no Token Provider"
     })
 }

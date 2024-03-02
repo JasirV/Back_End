@@ -1,6 +1,5 @@
 const userSchema = require("../Models/userSchema");
 const bcrypt = require("bcrypt");
-const userProduct = require("../Models/productSchema");
 const tokengenerator = require("../utils/jsWebToken");
 const productSchema = require("../Models/productSchema");
 const { default: mongoose } = require("mongoose");
@@ -191,7 +190,7 @@ const cartProduct = async (req, res) => {
       data: [],
     });
   }
-  const cartProducts = await productSchema.find({ _id: { $in: cartUserId } });
+  const cartProducts = await userSchema.find({ _id: { $in: cartUserId } });
   res.status(200).json({
     status: "success",
     message: "successfull fetch products",
@@ -209,7 +208,6 @@ if(!id){
   })
 }
 const user =await userSchema.findById(userId)
-console.log(user);
 if(!user){
   return res.status(404).json({
     status:'fail',

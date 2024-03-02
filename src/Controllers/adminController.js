@@ -20,7 +20,7 @@ const adminLogin = async (req, res) => {
     );
     res.status(200).json({
       status: "success",
-      data: token,
+      token: token,
     });
   } else {
     res.status(404).json({
@@ -75,6 +75,7 @@ const userById = async (req, res) => {
 
 //create Products
 const createProduct = async (req, res) => {
+  
   const { title, description, price, image, category } = req.body;
   const newProduct = await Product.create({
     title,
@@ -109,7 +110,7 @@ const adminProduct = async (req, res) => {
 //PRODUCT BY ID FOR ADDMIN
 
 const productById = async (req, res) => {
-  const { productId } = req.params.id;
+  const productId  = req.params.id;
   if (!productId) {
     return res.status(400).json({
       status: "fail",

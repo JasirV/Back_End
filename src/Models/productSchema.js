@@ -8,7 +8,7 @@ const productSchema=new mongoose.Schema({
     image:String,
     category: {
         type: String,
-        enum: ['car', 'dog'] 
+        enum: ['cat', 'dog'] 
     }
 })
 
