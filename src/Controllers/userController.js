@@ -112,7 +112,7 @@ const productById = async (req, res) => {
 
 const productList = async (req, res) => {
   const Paramscategory = req.params.categoryname;
-  const category = await productSchema.find({ categoryname: Paramscategory });
+  const category = await productSchema.find({category: Paramscategory }).exec();
   if (!category) {
     return res.status(400).json({
       status: "fail",
