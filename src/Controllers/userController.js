@@ -5,7 +5,7 @@ const productSchema = require("../Models/productSchema");
 const { default: mongoose } = require("mongoose");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const orderSchema = require("../Models/oderSchema");
-
+const Order = mongoose.model('Order', orderSchema);
 //Register User
 const createUser = async (req, res) => {
   const { name, email, username, password } = req.body;
@@ -325,7 +325,7 @@ const deleteWishList = async (req, res) => {
 
 // Paymet Section
 
-let value = {};
+let sValue = {};
 
 const PaymetSection = async (req, res) => {
   const userId = req.params.id;
@@ -373,7 +373,7 @@ const PaymetSection = async (req, res) => {
       message: "error on session side",
     });
   }
-  value = {
+  sValue = {
     userId,
     user,
     session,
@@ -386,10 +386,10 @@ const PaymetSection = async (req, res) => {
 };
 
 const succesPayment = async (req, res) => {
-  const { id, user, session } = value;
+  const { id, user, session } = sValue;
   const userId = user.id;
   const cartItem = user.cart;
-  const order = await orderSchema.create({
+  const order = await Order.create({
     userId: id,
     products: cartItem.map((item) => {
       new mongoose.Types.ObjectId(item._id);
@@ -442,7 +442,7 @@ const Orders = async (req, res) => {
       data: [],
     });
   }
-  const orderedProduct = await orderSchema
+  const orderedProduct = await Order
     .find({ _id: { $in: orderProducts } })
     .populate("products")
     .exec();

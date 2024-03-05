@@ -5,6 +5,7 @@ const productSchema = require("../Models/productSchema");
 const jwt = require("jsonwebtoken");
 const userSchema = require("../Models/userSchema");
 const orderSchema = require("../Models/oderSchema");
+const Order = mongoose.model('Order', orderSchema);
 
 //ADMIN LOGING
 
@@ -187,7 +188,7 @@ const deleteProduct = async (req, res) => {
 //Total Revenue
 
 const totalRevenue = async (req, res) => {
-  const total = await orderSchema.aggregate([
+  const total = await Order.aggregate([
     {
       $group: {
         _id: null,
@@ -196,12 +197,22 @@ const totalRevenue = async (req, res) => {
       },
     },
   ]);
+  if(!total){
+    return res.status(400).json({
+      message:'no Revenue'
+    })
+  }
+  res.status(200).json({
+    status:'success',
+    message:'suucessfuly calculate the revenue',
+    total
+  })
 };
 
 //orders
 
 const order = async (req, res) => {
-  const product = await orderSchema.find();
+  const product = await Order.find();
   if (!product) {
     return res.status(200).json({
       message: "No Products",
